@@ -1,0 +1,10 @@
+{
+  "name": "spotify-jam-crack",
+  "version": "1.0.0",
+  "author": "Raraph84",
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.3",
+    "puppeteer": "^24.33.0"
+  }
+}
