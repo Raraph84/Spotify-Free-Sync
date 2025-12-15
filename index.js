@@ -6,9 +6,9 @@ const dotenv = require("dotenv");
 dotenv.config({ quiet: true });
 
 (async () => {
-	const setup = fs.existsSync(__dirname + "/profile");
+	const setup = !fs.existsSync(__dirname + "/profile");
 	const browser = await puppeteer.launch({
-		headless: setup ? "new" : false,
+		headless: setup ? false : "new",
 		userDataDir: __dirname + "/profile"
 	});
 
