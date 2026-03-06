@@ -30,7 +30,7 @@ dotenv.config({ quiet: true });
 
 	const playPause = async () => await page.click("button[data-testid='control-button-playpause']");
 	const seek = async (percent) => {
-		const bar = await page.$("div[data-testid='playback-progressbar']")
+		const bar = await page.$("div[data-testid='playback-progressbar']");
 		const box = await bar.boundingBox();
 		await page.mouse.click(box.x + box.width * percent / 100, box.y + box.height / 2);
 	};
@@ -48,10 +48,12 @@ dotenv.config({ quiet: true });
 
 	let oldMusic = null;
 	const handlePresence = async (presence) => {
+		if (!presence) return;
 		const spotify = presence.activities.find((activity) => activity.name === "Spotify");
 		if (spotify && oldMusic !== spotify.syncId) {
 			oldMusic = spotify.syncId;
 			await play(spotify.syncId);
+			await new Promise(resolve => setTimeout(resolve, 500));
 			const duration = spotify.timestamps.end.getTime() - spotify.timestamps.start.getTime();
 			const elapsed = Date.now() - spotify.timestamps.start.getTime();
 			await seek((elapsed / duration) * 100);
