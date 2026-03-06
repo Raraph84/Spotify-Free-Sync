@@ -21,6 +21,7 @@ dotenv.config({ quiet: true });
 	}
 
 	await page.waitForSelector("button[data-testid='control-button-playpause']");
+	await new Promise((resolve) => setTimeout(resolve, 2000));
 
 	const bot = new discord.Client({ intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildPresences] });
 	bot.on("clientReady", () => {
@@ -40,10 +41,14 @@ dotenv.config({ quiet: true });
 		return label === "Pause";
 	};
 	const play = async (id) => {
-		await page.goto(`https://open.spotify.com/track/${id}`);
-		await page.waitForSelector("div[data-testid='action-bar-row']");
-		const bar = await page.$("div[data-testid='action-bar-row']");
-		await bar.click("button[data-testid='play-button']");
+		await page.evaluate((id) => {
+			window.history.pushState({}, "", `/track/${id}`);
+			window.dispatchEvent(new PopStateEvent("popstate"));
+		}, id);
+		await page.waitForSelector(`a[href$='/track/${id}/more-like-this']`);
+		await page.evaluate(() => {
+			document.querySelector("div[data-testid='action-bar-row']").querySelector("button[data-testid='play-button']").click();
+		});
 	};
 
 	let oldMusic = null;
