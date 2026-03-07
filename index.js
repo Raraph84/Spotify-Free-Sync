@@ -21,7 +21,7 @@ dotenv.config({ quiet: true });
 	}
 
 	await page.waitForSelector("button[data-testid='control-button-playpause']");
-	await new Promise((resolve) => setTimeout(resolve, 2000));
+	await new Promise((resolve) => setTimeout(resolve, 3000));
 
 	const bot = new discord.Client({ intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildPresences] });
 	bot.on("clientReady", () => {
