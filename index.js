@@ -62,7 +62,7 @@ dotenv.config({ quiet: true });
 			const duration = spotify.timestamps.end.getTime() - spotify.timestamps.start.getTime();
 			const elapsed = Date.now() - spotify.timestamps.start.getTime();
 			await seek((elapsed / duration) * 100);
-			console.log("Playing:", spotify.state);
+			console.log("Playing:", spotify.details, spotify.state);
 		} else if (!spotify && oldMusic) {
 			oldMusic = null;
 			if (await isPlaying())
@@ -71,8 +71,8 @@ dotenv.config({ quiet: true });
 		}
 	};
 
-	const guild = await bot.guilds.fetch(process.env.DISCORD_GUILD_ID);
-	const member = await guild.members.fetch(process.env.DISCORD_USER_ID);
+	const guild = await bot.guilds.fetch(process.argv[2] ?? process.env.DISCORD_GUILD_ID);
+	const member = await guild.members.fetch(process.argv[3] ?? process.env.DISCORD_USER_ID);
 	handlePresence(member.presence);
 	bot.on("presenceUpdate", (oldPresence, newPresence) => {
 		if (newPresence.userId !== member.id) return;
