@@ -35,12 +35,23 @@ dotenv.config({ quiet: true });
 		const box = await bar.boundingBox();
 		await page.mouse.click(box.x + box.width * percent / 100, box.y + box.height / 2);
 	};
+	const getCurrentTrack = async () => {
+		const a = await page.$("a[href*='uri=spotify:track']");
+		if (!a) return null;
+		const href = await a.evaluate(node => node.getAttribute("href"));
+		return href.split(":").pop();
+	};
 	const isPlaying = async () => {
 		const button = await page.$("button[data-testid='control-button-playpause']");
 		const label = await button.evaluate(node => node.getAttribute("aria-label"));
 		return label === "Pause";
 	};
 	const play = async (id) => {
+		if (await getCurrentTrack() === id) {
+			if (!await isPlaying())
+				await playPause();
+			return;
+		}
 		await page.evaluate((id) => {
 			window.history.pushState({}, "", `/track/${id}`);
 			window.dispatchEvent(new PopStateEvent("popstate"));
